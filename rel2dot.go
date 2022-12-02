@@ -38,8 +38,7 @@ func main() {
 
 	flag.StringVarP(&input, "input", "i", "", "relation tuples")
 	flag.StringVarP(&output, "output", "o", "", "dot output file")
-	flag.BoolVarP(&flip, "flip", "f", false, "flip directionality from obj->sub to sub->obj")
-
+	flag.BoolVarP(&flip, "flip", "f", false, "invert directionality (sub->obj to obj->sub)")
 	flag.Parse()
 
 	fmt.Fprintf(os.Stderr, "convert %s into %s\n", input, output)
@@ -94,13 +93,13 @@ func convert(w io.Writer, relations []*Relation, flip bool) error {
 		if _, err := w.Write([]byte(
 			iff(flip,
 				fmt.Sprintf("\"%s:%s\" -> \"%s:%s\" [label=%q];\n",
-					r.Subject.Type, r.Subject.Key,
 					r.Object.Type, r.Object.Key,
+					r.Subject.Type, r.Subject.Key,
 					r.Relation,
 				),
 				fmt.Sprintf("\"%s:%s\" -> \"%s:%s\" [label=%q];\n",
-					r.Object.Type, r.Object.Key,
 					r.Subject.Type, r.Subject.Key,
+					r.Object.Type, r.Object.Key,
 					r.Relation,
 				),
 			),
