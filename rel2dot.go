@@ -67,62 +67,6 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// g := graph.New(graph.StringHash, graph.Directed(), graph.PreventCycles())
-
-	// for _, r := range relations {
-	// 	objHash := fmt.Sprintf("%s:%s", r.Object.Type, r.Object.Key)
-	// 	obj := graph.StringHash(objHash)
-	// 	subHash := fmt.Sprintf("%s:%s", r.Subject.Type, r.Subject.Key)
-	// 	sub := graph.StringHash(subHash)
-
-	// 	if err := g.AddVertex(obj); err != nil {
-	// 		log.Print(err)
-	// 	}
-
-	// 	if err := g.AddVertex(sub); err != nil {
-	// 		log.Print(err)
-	// 	}
-
-	// 	if err := g.AddEdge(sub, obj, graph.EdgeAttribute("label", r.Relation)); err != nil {
-	// 		log.Printf("cycle sub:%s obj:%s", sub, obj)
-	// 		log.Fatal(err)
-	// 	}
-	// }
-
-	// scc, err := graph.StronglyConnectedComponents(g)
-	// if err != nil {
-	// 	log.Print(err)
-	// }
-
-	// fmt.Println(scc)
-
-	// if err := graph.DFS(g, graph.StringHash(fmt.Sprintf("%s:%s", "user", "user1")),
-	// 	func(value string) bool {
-	// 		fmt.Println(value)
-	// 		return false
-	// 	}); err != nil {
-	// 	log.Print(err)
-	// }
-
-	// if err := graph.DFS(g, graph.StringHash(fmt.Sprintf("%s:%s", "user", "user4")),
-	// 	func(value string) bool {
-	// 		fmt.Println(value)
-	// 		return false
-	// 	}); err != nil {
-	// 	log.Print(err)
-	// }
-
-	// if err := graph.DFS(g, graph.StringHash(fmt.Sprintf("%s:%s", "matter", "matter3")),
-	// 	func(value string) bool {
-	// 		fmt.Println(value)
-	// 		return false
-	// 	}); err != nil {
-	// 	log.Print(err)
-	// }
-
-	// file, _ := os.Create("./mygraph.gv")
-	// _ = draw.DOT(g, file)
-
 	w := os.Stdout
 	if output != "" {
 		w, err = os.Create(output)
@@ -154,7 +98,6 @@ func convert(w io.Writer, relations []*Relation, flip bool) error {
 	}
 
 	for _, r := range relations {
-		// a -> b [label="  a to b" labeltooltip="this is a tooltip"];
 		if _, err := w.Write([]byte(
 			iff(flip,
 				fmt.Sprintf("\"%s:%s\" -> \"%s:%s\" [label=%q];\n",
