@@ -29,6 +29,15 @@ type Relation struct {
 	} `json:"object"`
 }
 
+type Entity struct {
+	Type string `json:"type,omitempty"`
+	ID   string `json:"id,omitempty"`
+}
+
+func (e *Entity) String() string {
+	return fmt.Sprintf("%s:%s", e.Type, e.ID)
+}
+
 func main() {
 	var (
 		input  string
@@ -41,7 +50,7 @@ func main() {
 	flag.BoolVarP(&flip, "flip", "f", false, "invert directionality (sub->obj to obj->sub)")
 	flag.Parse()
 
-	fmt.Fprintf(os.Stderr, "convert %s into %s\n", input, output)
+	fmt.Fprintf(os.Stderr, "convert %s into %s\n", input, iff(output == "", "stdout", output))
 
 	if exists, _ := fileExists(input); !exists {
 		fmt.Fprintf(os.Stderr, "input %s not found\n", input)
@@ -57,6 +66,62 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	// g := graph.New(graph.StringHash, graph.Directed(), graph.PreventCycles())
+
+	// for _, r := range relations {
+	// 	objHash := fmt.Sprintf("%s:%s", r.Object.Type, r.Object.Key)
+	// 	obj := graph.StringHash(objHash)
+	// 	subHash := fmt.Sprintf("%s:%s", r.Subject.Type, r.Subject.Key)
+	// 	sub := graph.StringHash(subHash)
+
+	// 	if err := g.AddVertex(obj); err != nil {
+	// 		log.Print(err)
+	// 	}
+
+	// 	if err := g.AddVertex(sub); err != nil {
+	// 		log.Print(err)
+	// 	}
+
+	// 	if err := g.AddEdge(sub, obj, graph.EdgeAttribute("label", r.Relation)); err != nil {
+	// 		log.Printf("cycle sub:%s obj:%s", sub, obj)
+	// 		log.Fatal(err)
+	// 	}
+	// }
+
+	// scc, err := graph.StronglyConnectedComponents(g)
+	// if err != nil {
+	// 	log.Print(err)
+	// }
+
+	// fmt.Println(scc)
+
+	// if err := graph.DFS(g, graph.StringHash(fmt.Sprintf("%s:%s", "user", "user1")),
+	// 	func(value string) bool {
+	// 		fmt.Println(value)
+	// 		return false
+	// 	}); err != nil {
+	// 	log.Print(err)
+	// }
+
+	// if err := graph.DFS(g, graph.StringHash(fmt.Sprintf("%s:%s", "user", "user4")),
+	// 	func(value string) bool {
+	// 		fmt.Println(value)
+	// 		return false
+	// 	}); err != nil {
+	// 	log.Print(err)
+	// }
+
+	// if err := graph.DFS(g, graph.StringHash(fmt.Sprintf("%s:%s", "matter", "matter3")),
+	// 	func(value string) bool {
+	// 		fmt.Println(value)
+	// 		return false
+	// 	}); err != nil {
+	// 	log.Print(err)
+	// }
+
+	// file, _ := os.Create("./mygraph.gv")
+	// _ = draw.DOT(g, file)
 
 	w := os.Stdout
 	if output != "" {
