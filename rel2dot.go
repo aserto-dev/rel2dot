@@ -7,26 +7,15 @@ import (
 	"log"
 	"os"
 
+	dsc3 "github.com/aserto-dev/go-directory/aserto/directory/common/v3"
+
 	"github.com/pkg/errors"
 	flag "github.com/spf13/pflag"
 )
 
 type Relations struct {
-	Relations []*Relation `json:"relations"`
-}
-
-type Relation struct {
-	Subject struct {
-		ID   string `json:"id,omitempty"`
-		Type string `json:"type,omitempty"`
-		Key  string `json:"key,omitempty"`
-	} `json:"subject"`
-	Relation string `json:"relation"`
-	Object   struct {
-		ID   string `json:"id,omitempty"`
-		Type string `json:"type,omitempty"`
-		Key  string `json:"key,omitempty"`
-	} `json:"object"`
+	// Relations []*Relation `json:"relations"`
+	Relations []*dsc3.Relation `json:"relations"`
 }
 
 type Entity struct {
@@ -80,7 +69,7 @@ func main() {
 	}
 }
 
-func readInput(r io.Reader) ([]*Relation, error) {
+func readInput(r io.Reader) ([]*dsc3.Relation, error) {
 	dec := json.NewDecoder(r)
 
 	var relations Relations
@@ -91,7 +80,7 @@ func readInput(r io.Reader) ([]*Relation, error) {
 	return relations.Relations, nil
 }
 
-func convert(w io.Writer, relations []*Relation, flip bool) error {
+func convert(w io.Writer, relations []*dsc3.Relation, flip bool) error {
 
 	if _, err := w.Write([]byte("digraph G {\n")); err != nil {
 		return err
@@ -101,13 +90,13 @@ func convert(w io.Writer, relations []*Relation, flip bool) error {
 		if _, err := w.Write([]byte(
 			iff(flip,
 				fmt.Sprintf("\"%s:%s\" -> \"%s:%s\" [label=%q];\n",
-					r.Object.Type, r.Object.Key,
-					r.Subject.Type, r.Subject.Key,
+					r.ObjectType, r.ObjectId,
+					r.SubjectType, r.SubjectId,
 					r.Relation,
 				),
 				fmt.Sprintf("\"%s:%s\" -> \"%s:%s\" [label=%q];\n",
-					r.Subject.Type, r.Subject.Key,
-					r.Object.Type, r.Object.Key,
+					r.SubjectType, r.SubjectId,
+					r.ObjectType, r.ObjectId,
 					r.Relation,
 				),
 			),

@@ -12,7 +12,7 @@
             "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/rel2dot.go",
             "args": [
-                "-i", "/Users/gertd/workspace/src/github.com/aserto-proj/relativity/poc/data/relativity-relations.json"
+                "-i", "./relations.json"
             ]
         }
     ]
